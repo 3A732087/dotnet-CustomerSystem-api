@@ -1,0 +1,181 @@
+﻿
+@{
+    ViewBag.Title = "呼叫WebApi進行非同新增、修改、刪除";
+}
+
+<script>
+    $(document).ready(function () {
+        var apiurl = "http://localhost:2662/api/Customer";
+
+        $("#btnCreate").on("click", Create);
+        $("#btnEdit").on("click", Edit);
+        $("#btnDelete").on("click", Delete);
+
+
+        LoadData();
+
+        function LoadData() {
+            $.ajax({
+                url: apiurl,
+                type: 'GET',
+                success: function (data) {
+                    $("#tableshow").empty();
+                    for (var i = 0; i < data.length; i++) {
+                        $("#tableshow").append(
+                            "<tr>" +
+                            "<td>" + data[i].Id + "</td>" +
+                            "<td>" + data[i].Name + "</td>" +
+                            "<td>" + data[i].Phone + "</td>" +
+                            "<td>" + data[i].Email + "</td>" +
+                            "<td>" + data[i].Address + "</td>" +
+                            "<td><input type='button' value='選取' id='btnSelect" + i + "'class='btn btn-info' /></td>" +
+                            "</tr>"
+                        );
+                        $("#btnSelect" + i).on("click", { Id: data[i].Id }, SelectData);
+                    }
+                    $("#Id").val("");
+                    $("#Name").val("");
+                    $("#Phone").val("");
+                    $("#Email").val("");
+                    $("#Address").val("");
+                }
+            });
+        }
+
+        function SelectData(event) {
+            var Id = event.data.Id;
+            $.ajax({
+                url: apiurl + "?Id=" + encodeURI(Id),
+                type: 'GET',
+                success: function (data) {
+                    $("#Id").val(data.Id);
+                    $("#Name").val(data.Name);
+                    $("#Phone").val(data.Phone);
+                    $("#Email").val(data.Email);
+                    $("#Address").val(data.Address);
+                }
+            })
+        }
+
+        function Create() {
+            var r = confirm("確定要新增嗎?");
+            if (r == true) {
+                var Name, Phone, Email, Address;
+                Name = $("#Name").val();
+                Phone = $("#Phone").val();
+                Email = $("#Email").val();
+                Address = $("#Address").val();
+
+                var data = "?name=" + Name + "&phone=" + Phone + "&email=" + Email + "&address=" + Address;
+            }
+            $.ajax({
+                url: apiurl + encodeURI(data),
+                type: 'POST',
+                success: function (result) {
+                    if (result != 0) {
+                        alert("新增成功");
+                        LoadData();
+                    }
+                    else {
+                        alert("新增失敗");
+                    }
+                }
+            });
+        }
+
+        function Edit() {
+            var r = confirm("確定要修改嗎?");
+            if (r == true) {
+                var Id, Name, Phone, Email, Address;
+                Id = $("#Id").val();
+                Name = $("#Name").val();
+                Phone = $("#Phone").val();
+                Email = $("#Email").val();
+                Address = $("#Address").val();
+
+                var data = "?id=" + Id + "&name=" + Name + "&phone=" + Phone + "&email=" + Email + "&address=" + Address;
+            }
+            $.ajax({
+                url: apiurl + encodeURI(data),
+                type: 'PUT',
+                success: function (result) {
+                    if (result != 0) {
+                        alert("修改成功");
+                        LoadData();
+                    }
+                    else {
+                        alert("修改失敗");
+                    }
+                }
+            });
+        }
+
+        function Delete() {
+            var r = confirm("確定要刪除嗎?");
+            if (r == true) {
+                var Id = $("#Id").val();              
+            }
+            $.ajax({
+                url: apiurl + "?Id=" + encodeURI(Id),
+                type: 'DELETE',
+                success: function (result) {
+                    if (result != 0) {
+                        alert("刪除成功");
+                        LoadData();
+                    }
+                    else {
+                        alert("刪除失敗");
+                    }
+                }
+            });
+        }
+    })
+</script>
+
+<h2>呼叫WebApi進行非同新增、修改、刪除</h2>
+
+<div class="panel panel-primary">
+    <div class="panel-heading">客戶管理</div>
+    <div class="panel-body">
+        <div class="form-group">
+            <label for="Id">編號</label>
+            <input type="text" class="form-control" id="Id" readonly />
+        </div>
+        <div class="form-group">
+            <label for="Name">姓名</label>
+            <input type="text" class="form-control" id="Name" required />
+        </div>
+        <div class="form-group">
+            <label for="Phone">電話</label>
+            <input type="text" class="form-control" id="Phone" required />
+        </div>
+        <div class="form-group">
+            <label for="Email">信箱</label>
+            <input type="text" class="form-control" id="Email" required />
+        </div>
+        <div class="form-group">
+            <label for="Address">地址</label>
+            <input type="text" class="form-control" id="Address" required />
+        </div>
+        <input type="button" class="btn btn-primary" id="btnCreate" value="新增" />
+        <input type="button" class="btn btn-success" id="btnEdit" value="修改" />
+        <input type="button" class="btn btn-danger" id="btnDelete" value="刪除" />
+
+
+    </div>
+</div>
+
+<table class="table">
+    <tr>
+        <th>姓名</th>
+        <th>編號</th>
+        <th>電話</th>
+        <th>信箱</th>
+        <th>地址</th>
+        <th></th>
+    </tr>
+
+    <tbody id="tableshow">
+    </tbody>
+</table>
+
