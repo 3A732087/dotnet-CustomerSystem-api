@@ -13,42 +13,48 @@ namespace CustomerSystemApi.Controllers
     {
         CustomerService _service = new CustomerService();
 
-        // GET: api/Customer
-        public List<customer> Get()
+        //GET: api/Customer
+       [HttpGet]
+        public IHttpActionResult Get()
         {
             var customers = _service.GetAllCustomer();
-            return customers;
+            return Ok(customers);
         }
 
         // GET: api/Customer/5
-        public customer Get(int id)
+        [HttpGet]
+        [Route("api/Customer/{id}")]
+        public IHttpActionResult Get(int id)
         {
             var customer = _service.GetOneCustomer(id);
-            return customer;
+            return Ok(customer); 
         }
 
         // POST: api/Customer
-        public int Post(string name, string phone, string email, string address) 
+        [HttpPost]
+        public IHttpActionResult Post(string name, string phone, string email, string address) 
         {
             int num = 0;
             num = _service.InsertCustomer( name,  phone,  email,  address);
-            return num;
+            return Ok(num);
         }
 
         // PUT: api/Customer/5
-        public int Put(int id, string name, string phone, string email, string address)
+        [HttpPut]
+        public IHttpActionResult Put(int id, string name, string phone, string email, string address)
         {
             int num = 0;
             num = _service.UpdateCustomer(id, name, phone, email, address);
-            return num;
+            return Ok(num); ;
         }
 
         // DELETE: api/Customer/5
-        public int Delete(int id)
+        [HttpDelete]
+        public IHttpActionResult Delete(int id)
         {
             int num = 0;
             num = _service.DeleteCustomer(id);
-            return num;
+            return Ok(num); 
         }
     }
 }

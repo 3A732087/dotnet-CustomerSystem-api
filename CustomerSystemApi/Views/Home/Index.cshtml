@@ -45,7 +45,7 @@
         function SelectData(event) {
             var Id = event.data.Id;
             $.ajax({
-                url: apiurl + "?Id=" + encodeURI(Id),
+                url: apiurl + '/' + encodeURI(Id),
                 type: 'GET',
                 success: function (data) {
                     $("#Id").val(data.Id);
